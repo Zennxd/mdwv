@@ -1,7 +1,7 @@
 /*main stuff*/
 body {
     background-color: #333339;
-    background-image: url(/bg.jpg);
+    background-image: url(bg.jpg);
     background-blend-mode: luminosity;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -21,6 +21,7 @@ h1,h2,h3,h4,h5,h6 {
     margin-bottom: 5px;
 }
 
+/*mdwv stuff*/
 .md_divbody{
     text-align:center;
     width: 100%;
