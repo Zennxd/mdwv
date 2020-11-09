@@ -6,7 +6,7 @@
         return json_decode(file_get_contents($filepath), true);
     }
     function putJSON($filepath, $assoc){
-        file_put_contents($filepath , json_encode($assoc, JSON_PRETTY_PRINT));
+        file_put_contents($filepath, json_encode($assoc, JSON_PRETTY_PRINT));
     }
 ?>
 
@@ -14,8 +14,7 @@
     <head>
     <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
-        <link rel="stylesheet" type="text/css" href="../style.css"\>
-        <link rel="stylesheet" type="text/css" href="additional.css"\>
+        <link rel="stylesheet" type="text/css" href="mdwv.css"\>
     </head>
     <body>
         <div align="center" class="md_divbody">
@@ -25,7 +24,6 @@
                     // this is essentially the "starting page" that's being generated here
                     // TODO: i should probably just make a starting page file
                     if(!$file){
-                        echo md5_file("files/$file");
                         //generate table of markdown files that can be accessed
                         echo "<table>";
                         echo "<tr><td>Files:</td></tr>";
@@ -40,6 +38,9 @@
                     }
                     // file has been selected, has it been cached? is the cached version up to date?
                     else{
+                        //grab file hash for cache validation
+                        $filehash = md5_file("files/$file");
+                        //grab cache history
                         $cachedjson = grabJSON(".files_cached/cached.json");
                         if(!(array_key_exists($file, $cachedjson) && $cachedjson[$file]["srcmd5"] == md5_file("files/$file"))){
                             //file has not been cached or cache is out of date, create cache
@@ -59,7 +60,12 @@
                         echo file_get_contents(".files_cached/$file");
                     }
                 ?>
-                <div class="md_raw"><b><a href="files/<?=$file?>"><?= $file != "" ? "$file raw" : "" ?></a></b></div>
+                <div class="md_footer" align="right">
+                    <!-- md5 hash of markdown file -->
+                    MD5: <i><?= $filehash ?></i> 
+                    <!-- link to raw markdown file -->
+                    <b><a href="files/<?=$file?>"><?= $file != "" ? "$file raw" : "" ?></a></b>
+                </div>
             </div>
         </div>
     </body>
