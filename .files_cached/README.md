@@ -1,6 +1,6 @@
 <h1 id="mdwv">mdwv</h1>
 <h2 id="a-markdown-web-viewer">A markdown web viewer</h2>
-<h3 id="live-example"><a href="https://lgajewski.de/mdwv">Live Example</a></h3>
+<h3 id="live-example"><a href="https://lgajewski.de/mdwv/?file=README.md">Live Example</a></h3>
 <p>Drop your markdown files in <strong>mdwv/files</strong> to access them on your site!
 The markdown files get converted to HTML <em>(and cached)</em></p>
 <h3 id="installation">Installation</h3>

@@ -1,6 +1,6 @@
 # mdwv
 ## A markdown web viewer
-### [Live Example](https://lgajewski.de/mdwv)
+### [Live Example](https://lgajewski.de/mdwv/?file=README.md)
 
 Drop your markdown files in **mdwv/files** to access them on your site!
 The markdown files get converted to HTML *(and cached)*
