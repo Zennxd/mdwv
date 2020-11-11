@@ -1,13 +1,23 @@
 <?php
+    /* options */
+    $CACHEPATH = ".files_cached/cached.json";
+    $splash = true;
+
+
     //grab file GET
     $file = array_key_exists("file", $_GET) ? $_GET["file"] : NULL;
 
-    function grabJSON($filepath){
-        return json_decode(file_get_contents($filepath), true);
+    /* Caching Stuff™ */
+    //get/save json from/to cache file
+    function grabJSON(){
+        global $CACHEPATH;
+        return json_decode(file_get_contents($CACHEPATH), true);
     }
-    function putJSON($filepath, $assoc){
-        file_put_contents($filepath, json_encode($assoc, JSON_PRETTY_PRINT));
+    function putJSON($assoc){
+        global $CACHEPATH;
+        file_put_contents($CACHEPATH, json_encode($CACHEPATH, JSON_PRETTY_PRINT));
     }
+    $wascached = true; //used for footer
 ?>
 
 <html>
@@ -22,29 +32,20 @@
                 <?php
                     // if no file given, show list of files in file directory
                     // this is essentially the "starting page" that's being generated here
-                    // TODO: i should probably just make a starting page file
+                    # TODO: i should probably just make a starting page file (i did)
                     if(!$file){
-                        //generate table of markdown files that can be accessed
-                        echo "<table>";
-                        echo "<tr><td>Files:</td></tr>";
-
-                        foreach(glob("files/*.md") as $filename){
-                            $filename = basename($filename);
-
-                            echo "<tr><td><a href=\"?file=$filename\">$filename</a></td></tr>";
-                        }
-
-                        echo "</table>";
+                        include "view.php";
                     }
                     // file has been selected, has it been cached? is the cached version up to date?
                     else{
                         //grab file hash for cache validation
                         $filehash = md5_file("files/$file");
                         //grab cache history
-                        $cachedjson = grabJSON(".files_cached/cached.json");
+                        $cachedjson = grabJSON();
                         if(!(array_key_exists($file, $cachedjson) && $cachedjson[$file]["srcmd5"] == md5_file("files/$file"))){
                             //file has not been cached or cache is out of date, create cache
-                            //pandoc ftw
+                            $wascached = false;
+                            # pandoc ftw
                             $output = [];
                             exec("cat files/".escapeshellcmd($file)." | pandoc -f markdown -t html --wrap=preserve --eol=native", $output);
                             file_put_contents(".files_cached/$file", implode(PHP_EOL, $output));
@@ -54,15 +55,16 @@
                             $cachedata["srcmd5"] = md5_file("files/$file");
                             $cachedata["cachetime"] = time();
                             $cachedjson[$file] = $cachedata;
-                            putJSON(".files_cached/cached.json", $cachedjson);
+                            putJSON($cachedjson);
                         }
                         //file cached and up to date (now), just print it out
                         echo file_get_contents(".files_cached/$file");
                     }
                 ?>
-                <div class="md_footer" align="right">
+                <!-- # dont judge -->
+                <div class="md_footer" align="right" style="visibility: <?=$file != NULL ? "visible" : "hidden"; //don't judge?>">
                     <!-- md5 hash of markdown file -->
-                    MD5: <i><?= $filehash ?></i> 
+                    MD5: <i><?= "$filehash ". ($wascached == true ? " (cached)" : "(not cached)") ?></i> 
                     <!-- link to raw markdown file -->
                     <b><a href="files/<?=$file?>"><?= $file != "" ? "$file raw" : "" ?></a></b>
                 </div>
