@@ -15,7 +15,7 @@
     }
     function putJSON($assoc){
         global $CACHEPATH;
-        file_put_contents($CACHEPATH, json_encode($CACHEPATH, JSON_PRETTY_PRINT));
+        file_put_contents($CACHEPATH, json_encode($assoc, JSON_PRETTY_PRINT));
     }
     $wascached = true; //used for footer
 ?>
@@ -25,6 +25,7 @@
     <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <link rel="stylesheet" type="text/css" href="mdwv.css"\>
+        <title><?=$_GET["file"] ? $_GET["file"] : "mdwv"?></title>
     </head>
     <body>
         <div align="center" class="md_divbody">
@@ -54,6 +55,7 @@
                             $cachedata = [];
                             $cachedata["srcmd5"] = md5_file("files/$file");
                             $cachedata["cachetime"] = time();
+                            $cachedata["size"] = filesize("files/$file");
                             $cachedjson[$file] = $cachedata;
                             putJSON($cachedjson);
                         }
